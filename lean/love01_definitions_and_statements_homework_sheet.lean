@@ -19,8 +19,12 @@ namespace LoVe
 1.1 (1 point). Define the function `fib` that computes the Fibonacci
 numbers. -/
 
-def fib : ℕ → ℕ :=
-sorry
+def fib : ℕ → ℕ 
+| 0:= 0
+| 1:= 1
+| (nat.succ (nat.succ n)) := fib n + fib (nat.succ n)
+
+
 
 /-! 1.2 (0 points). Check that your function works as expected. -/
 
@@ -58,9 +62,12 @@ type inference. -/
 
 #eval reverse ([] : list ℕ)   -- expected: []
 #eval reverse [1, 3, 5]       -- expected: [5, 3, 1]
+#eval reverse [1]             -- expected [1]
+#eval reverse [1, 2]          -- expected [2, 1]
+#eval reverse ["a", "b", "c"] -- expected  ["c", "b", "a"]
 -- invoke `#eval` here
 
-/-! 2.2 (2 points). State (without proving them) the following properties of
+/-! 2.2 (2 points). State (without proving them) the following properties   of
 `append₂` and `reverse`. Schematically:
 
     `append₂ (append₂ xs ys) zs = append₂ xs (append₂ ys zs)`
@@ -76,13 +83,20 @@ Hint: Take a look at `reverse_reverse` from the demonstration file. -/
 
 -- enter your lemma statements here
 
+lemma appendassoc {α: Type} {xs ys zs : list α} :
+    append₂ (append₂ xs ys) zs = append₂ xs (append₂ ys zs) :=
+    sorry
+
+lemma reverseappend {α: Type } { xs ys : list α} :
+    reverse (append₂ xs ys) = append₂ (reverse ys) (reverse xs) :=
+    sorry
 
 /-! ## Question 3 (5 points): λ-Terms
 
 3.1 (2 points). Complete the following definitions, by replacing the `sorry`
 placeholders by terms of the expected type.
 
-Please use reasonable names for the bound variables, e.g., `a : α`, `b : β`,
+Please use reasonable names for the bound va riables, e.g., `a : α`, `b : β`,
 `c : γ`.
 
 Hint: A procedure for doing so systematically is described in Section 1.1.4 of
@@ -91,16 +105,16 @@ while constructing a term. By hovering over `_`, you will see the current
 logical context. -/
 
 def B : (α → β) → (γ → α) → γ → β :=
-sorry
+λf g c, f (g c) 
 
 def S : (α → β → γ) → (α → β) → α → γ :=
-sorry
+λg f a, g a (f a)
 
 def more_nonsense : (γ → (α → β) → α) → γ → β → α :=
-sorry
+λg c b, g c (λa, b)
 
 def even_more_nonsense : (α → α → β) → (β → γ) → α → β → γ :=
-sorry
+λg f a, f 
 
 /-! 3.2 (1 point). Complete the following definition.
 
@@ -110,7 +124,7 @@ follow the procedure described in the Hitchhiker's Guide.
 Note: Peirce is pronounced like the English word "purse". -/
 
 def weak_peirce : ((((α → β) → α) → α) → β) → β :=
-sorry
+λf, f(λg, g (λa, f (λg, a)))
 
 /-! 3.3 (2 points). Show the typing derivation for your definition of `S` above,
 using ASCII or Unicode art. You might find the characters `–` (to draw
@@ -119,5 +133,26 @@ horizontal bars) and `⊢` useful.
 Feel free to introduce abbreviations to avoid repeating large contexts `C`. -/
 
 -- write your solution here
+--  (α → β → γ) → (α → β) → α → γ 
+-- λg, λf, λa, g a (f a) 
+
+/- Let C := g : α → β → γ, f : α → β, a : α. We have
+
+–––––––––––––––––Var    ––––––––––Var       –––––––––––––Var    ––––––––––Var
+C ⊢ g : α → β → γ       C ⊢ a : α           C ⊢ f : α → β       C ⊢ a : α
+––––––––––––––––––––––––––––––––––App       ––––––––––––––––––––––––––––––App
+C ⊢ g a : β → γ                             C ⊢ f a : β
+––––––––––––––––––––––––––––––––––––––––––––––––––––––––App
+C ⊢ g a (f a) : γ
+––––––––––––––––––––––––––––––––––––––––––––––––––Lam
+g : α → β → γ, f : α → β ⊢  λa, g a (f a) : α → γ
+––––––––––––––––––––––––––––––––––––––––––––––––––Lam
+g : α → β → γ ⊢ λf a, g a (f a) : (α → β) → α → γ
+–––––––––––––––––––––––––––––––––––––––––––––––––––Lam
+⊢ λg f a, g a (f a) : (α → β → γ) → (α → β) → α → γ 
+
+-/
+
+
 
 end LoVe
