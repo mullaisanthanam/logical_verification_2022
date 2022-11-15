@@ -49,17 +49,38 @@ end backward_proofs
 an `∃` quantifier, using no other lemmas than the introduction and elimination
 rules for `∃`, `∧`, and `↔`. -/
 
+#check exists.intro
+#check exists.elim
+
 lemma exists_and_commute {α : Type} (p q : α → Prop) :
   (∃x, p x ∧ q x) ↔ (∃x, q x ∧ p x) :=
--- assume h : (∃x, p x ∧ q x),
-show _, 
-from iff.intro
+iff.intro
 (
-  _ 
+  assume hxpq,
+  show _, 
+  from exists.elim hxpq 
+  (
+    fix x, 
+    assume hpq : p x ∧ q x ,
+    have qp : _ := 
+    and.intro (and.elim_right hpq) (and.elim_left hpq),
+    show _, 
+    from exists.intro x qp  
+  )
 )
-( 
-  _ 
-)
+(
+  assume hxqp,
+  show _, 
+  from exists.elim hxqp 
+  (
+    fix x, 
+    assume hqp : q x ∧ p x ,
+    have pq : _ := 
+    and.intro (and.elim_right hqp) (and.elim_left hqp),
+    show _, 
+    from exists.intro x pq
+  )
+) 
 
 
 /-! ## Question 2 (3 points): Fokkink Logic Puzzles
@@ -89,7 +110,8 @@ Hint: There is an easy way. -/
 
 lemma weak_peirce₂ :
   ∀a b : Prop, ((((a → b) → a) → a) → b) → b :=
-λa b hg, hg (λhf, hf (λha, hg (λh, ha)))
+λ(a a: Prop) habaab, habaab (λhabaa, habaa (λha, habaab (λhaba, ha)))
+-- λa b hg, hg (λhf, hf (λha, hg (λh, ha)))
 
 /-! 2.2 (2 points). Prove the same Fokkink lemma again, this time by providing a
 structured proof, with `assume`s and `show`s. -/

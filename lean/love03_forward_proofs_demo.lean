@@ -363,6 +363,8 @@ begin
   exact hab
 end
 
+theorem LoVe.forward_proofs.and_swap₃ : ∀ (a b : Prop), a ∧ b → b ∧ a :=
+λ (a b : Prop) (hab : a ∧ b), ⟨and.elim_right hab, and.elim_left hab⟩
 /-! Tactical proofs are reduced to proof terms. -/
 
 #print and_swap
