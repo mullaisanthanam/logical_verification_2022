@@ -124,7 +124,7 @@ follow the procedure described in the Hitchhiker's Guide.
 Note: Peirce is pronounced like the English word "purse". -/
 
 def weak_peirce : ((((α → β) → α) → α) → β) → β :=
-λf, f(λg, g (λa, f (λg, a)))
+λf, f(λg, g (λa, f (λg, a)))  
 
 /-! 3.3 (2 points). Show the typing derivation for your definition of `S` above,
 using ASCII or Unicode art. You might find the characters `–` (to draw

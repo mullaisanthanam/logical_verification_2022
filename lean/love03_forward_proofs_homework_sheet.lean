@@ -27,15 +27,21 @@ namespace backward_proofs
 
 lemma peirce_of_dn :
   double_negation → peirce :=
-sorry
+assume dn,
+show peirce, 
+from peirce_of_em (sorry_lemmas.em_of_dn dn)
 
 lemma em_of_peirce :
   peirce → excluded_middle :=
-sorry
+assume p, 
+show excluded_middle, 
+from sorry_lemmas.em_of_dn (dn_of_peirce p)
 
 lemma dn_of_em :
   excluded_middle → double_negation :=
-sorry
+assume em,
+show double_negation, 
+from dn_of_peirce (peirce_of_em em)
 
 end backward_proofs
 
@@ -45,7 +51,15 @@ rules for `∃`, `∧`, and `↔`. -/
 
 lemma exists_and_commute {α : Type} (p q : α → Prop) :
   (∃x, p x ∧ q x) ↔ (∃x, q x ∧ p x) :=
-sorry
+-- assume h : (∃x, p x ∧ q x),
+show _, 
+from iff.intro
+(
+  _ 
+)
+( 
+  _ 
+)
 
 
 /-! ## Question 2 (3 points): Fokkink Logic Puzzles
@@ -75,13 +89,28 @@ Hint: There is an easy way. -/
 
 lemma weak_peirce₂ :
   ∀a b : Prop, ((((a → b) → a) → a) → b) → b :=
-sorry
+λa b hg, hg (λhf, hf (λha, hg (λh, ha)))
 
 /-! 2.2 (2 points). Prove the same Fokkink lemma again, this time by providing a
 structured proof, with `assume`s and `show`s. -/
 
 lemma weak_peirce₃ :
   ∀a b : Prop, ((((a → b) → a) → a) → b) → b :=
-sorry
+fix a b,
+assume hg,
+show b,
+from hg 
+(
+  assume hf,
+  show a, from hf 
+  (
+    assume ha,
+    show b, from hg 
+    (
+      assume hf,
+      show a, from ha
+    )
+  )
+)
 
 end LoVe
